@@ -11,24 +11,44 @@
                          (.addArguments []))]
     (ChromeDriver. chrome-options)))
 
+(defn navegar-para [driver url]
+  "-> driver.get(url)"
+  (-> driver (.get url))
+  driver)
+
+(defn clicar-em [driver elemento]
+  "-> elemento.click()"
+  (-> (-> driver (.findElement elemento)) (.click))
+  driver)
+
+(defn preencher-campo [driver path valor]
+  "-> elemento.sendKeys(valor)"
+  (-> (-> driver (.findElement path)) (.sendKeys (into-array CharSequence valor)))
+  driver)
+
+(defn verificarTexto [path driver texto]
+  "-> elemento.getText().isEquals(texto)"
+  (-> (-> driver (.findElement path) (.getText) (= texto) (is)))
+  driver)
+
 (deftest search-clojure-test
   (let [ ^WebDriver driver (get-driver)]
     (try
-      (-> driver (.get "https://google.com"))
-      (let [elemento (-> driver (.findElement (By/name "q")))] ; encontrar elemento
-        (-> elemento (.click))                              ; clicar no elemento
-        (-> elemento (.sendKeys (into-array CharSequence ["clojure" (Keys/ENTER)])))) ; preencher elemento e pressionar ENTER
-      (is (= "Clojure" (-> driver (.findElement (By/xpath "//h3[text()=\"Clojure\"]")) (.getText))))
+      (-> driver
+          (navegar-para "https://google.com")
+          (clicar-em (By/name "q"))
+          (preencher-campo (By/name "q") ["clojure" Keys/ENTER])
+          (verificarTexto (By/xpath "//h3[text()=\"Clojure\"]") "Clojure"))
       (finally
         (.quit driver)))))
 
 (deftest search-java-test
   (let [^WebDriver driver (get-driver)]
     (try
-      (-> driver (.get "https://google.com"))
-      (let [elemento (-> driver (.findElement (By/name "q")))]  ; encontrar elemento
-        (-> elemento (.click))                                  ; clicar no elemento
-        (-> elemento (.sendKeys (into-array CharSequence ["java" (Keys/ENTER)])))) ; preencher elemento e pressionar ENTER
-      (is (= "Java | Oracle" (-> driver (.findElement (By/xpath "(//h3[text()=\"Java | Oracle\"])[1]")) (.getText)))) ; asserção recuperando texto de elemento
+      (-> driver
+         (navegar-para "https://google.com")
+         (clicar-em (By/name "q"))
+         (preencher-campo (By/name "q") ["java" Keys/ENTER])
+         (verificarTexto (By/xpath "(//h3[text()=\"Java | Oracle\"])[1]") "Java | Oracle"))
       (finally
         (.quit driver)))))
