@@ -26,7 +26,7 @@
   (-> (-> driver (.findElement path)) (.sendKeys (into-array CharSequence valor)))
   driver)
 
-(defn verificarTexto [path driver texto]
+(defn verificarTexto [driver path texto]
   "-> elemento.getText().isEquals(texto)"
   (-> (-> driver (.findElement path) (.getText) (= texto) (is)))
   driver)
