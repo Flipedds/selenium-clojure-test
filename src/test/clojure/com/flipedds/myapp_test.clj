@@ -15,7 +15,7 @@
       (catch Exception e
         (println "Error: " (.getMessage e)))
       (finally
-        (.quit driver)))))
+        (-> driver (.quit))))))
 
 (deftest search-java-test
   (let [^WebDriver driver (get-driver)]
@@ -28,4 +28,4 @@
       (catch Exception e
         (println "Error: " (.getMessage e)))
       (finally
-        (.quit driver)))))
+        (-> driver (.quit))))))
