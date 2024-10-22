@@ -37,7 +37,7 @@ The tests are defined in the myapp_test.clj file and utilize utility functions f
       (catch Exception e
         (println "Error: " (.getMessage e)))
       (finally
-        (.quit driver)))))
+        (-> driver (.quit))))))
 
 (deftest search-java-test
   (let [^WebDriver driver (get-driver)]
@@ -50,7 +50,7 @@ The tests are defined in the myapp_test.clj file and utilize utility functions f
       (catch Exception e
         (println "Error: " (.getMessage e)))
       (finally
-        (.quit driver)))))
+        (-> driver (.quit))))))
 ````
 
 #### driver_utils.clj
